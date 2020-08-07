@@ -1,17 +1,20 @@
-import express from 'express'
+import Koa from 'koa'
+import koaSwagger from 'koa2-swagger-ui'
+import apiRoutes from './routes'
 
-const app = express()
-const port = process.env.PORT || 3000
+const app = new Koa()
+const port = process.env.PORT || 3001
 
-app.get('/', function(_, res) {
-  res.send('hello worlddd')
-})
+app.use(apiRoutes.middleware())
+app.use(
+  koaSwagger({
+    routePrefix: '/api-docs',
+    swaggerOptions: {
+      url: '/apis/_api.json',
+    },
+  }),
+)
 
-app.listen(port, function(error) {
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  console.log(`App listen on port: ${port}`)
+app.listen(port, function () {
+  console.log(`App is listen on port: ${port}`)
 })
